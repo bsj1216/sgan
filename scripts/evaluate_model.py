@@ -1,8 +1,11 @@
 import argparse
 import os
 import torch
+import sys
 
 from attrdict import AttrDict
+
+sys.path.insert(0,'/home/sbae/sgan')
 
 from sgan.data.loader import data_loader
 from sgan.models import TrajectoryGenerator
@@ -10,7 +13,7 @@ from sgan.losses import displacement_error, final_displacement_error
 from sgan.utils import relative_to_abs, get_dset_path
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model_path', type=str)
+parser.add_argument('--model_path', default='../models/sgan-models/eth_8_model.pt', type=str)
 parser.add_argument('--num_samples', default=20, type=int)
 parser.add_argument('--dset_type', default='test', type=str)
 
