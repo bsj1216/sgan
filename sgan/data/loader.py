@@ -11,10 +11,10 @@ def data_loader(args, data):
         skip=args.skip,
         delim=args.delim)
 
-#    loader = DataLoader(
-#        dset,
-#        batch_size=args.batch_size,
-#        shuffle=True,
-#        num_workers=args.loader_num_workers,
-#        collate_fn=seq_collate)
+   loader = DataLoader(
+       dset,
+       batch_size=args.batch_size,
+       shuffle=True,
+       num_workers=args.loader_num_workers,
+       collate_fn=seq_collate)
     return dset, []
