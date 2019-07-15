@@ -19,6 +19,14 @@ from attrdict import AttrDict
 
 sys.path.insert(0,'/home/sbae/sgan')
 
+import numpy as np
+import time
+
+from attrdict import AttrDict
+
+sys.path.insert(0,'/home/sbae/automotive-control-temporary/python/nnmpc/sgan/')
+
+
 from sgan.data.loader import data_loader
 from sgan.models import TrajectoryGenerator
 from sgan.losses import displacement_error, final_displacement_error
@@ -56,15 +64,25 @@ def get_generator(checkpoint):
 
 
 def main(args):
-    # data example: 
-    data = [[840.  ,   2.  ,   9.57,   6.24],
-       [840.  ,   3.  ,  11.94,   6.77],
-       [850.  ,   2.  ,   8.73,   6.34],
-       [850.  ,   3.  ,  11.03,   6.84],
-       [850.  ,   4.  ,  -1.32,   5.11],
-       [850.  ,   5.  ,  -1.48,   4.43],
-       [850.  ,   6.  ,  11.84,   5.82],
-       [860.  ,   2.  ,   7.94,   6.5 ]]
+    # data example:
+
+    data = np.array([
+       [ 1,  1.000e+00,  8.460e+00,  3.590e+00],
+       [ 1,  2.000e+00,  1.364e+01,  5.800e+00],
+       [ 2,  1.000e+00,  9.570e+00,  3.790e+00],
+       [ 2,  2.000e+00,  1.364e+01,  5.800e+00],
+       [ 3,  1.000e+00,  1.067e+01,  3.990e+00],
+       [ 3,  2.000e+00,  1.364e+01,  5.800e+00],
+       [ 4,  1.000e+00,  1.173e+01,  4.320e+00],
+       [ 4,  2.000e+00,  1.209e+01,  5.750e+00],
+       [ 5,  1.000e+00,  1.281e+01,  4.610e+00],
+       [ 5,  2.000e+00,  1.137e+01,  5.800e+00],
+       [ 6,  1.000e+00,  1.281e+01,  4.610e+00],
+       [ 6,  2.000e+00,  1.031e+01,  5.970e+00],
+       [ 7,  1.000e+00,  1.194e+01,  6.770e+00],
+       [ 7,  2.000e+00,  9.570e+00,  6.240e+00],
+       [ 8,  1.000e+00,  1.103e+01,  6.840e+00],
+       [ 8,  2.000e+00,  8.730e+00,  6.340e+00]])
     
     if os.path.isdir(args.model_path):
         raise Exception("model_path cannot be a directory")
@@ -79,6 +97,18 @@ def main(args):
     _args = AttrDict(checkpoint['args'])
     _, loader = loader(_args, data)
     pred_traj = predict(_args, loader, generator)
+        paths = [args.model_path]
+    
+    for path in paths:        
+    #    obs_traj = torch.tensor(args.obs_traj)
+        checkpoint = torch.load(path)
+        generator = get_generator(checkpoint)
+#        data = args.data
+        _args = AttrDict(checkpoint['args'])
+        _, loader = data_loader(_args, data)
+        start_time = time.time()
+        pred_traj = predict(_args, loader, generator)
+        print("time elapsed: {}".format(time.time() - start_time))
     
     print("pred_traj : {}".format(pred_traj))
 
@@ -100,3 +130,21 @@ def predict(args, loader, generator):
     
     return pred_traj[0,:,:].tolist()
 
+#    with torch.no_grad():
+    # for batch in loader:
+    #     batch = [tensor.cuda() for tensor in batch]
+    #     (obs_traj, _, obs_traj_rel, _,
+    #      _, _, seq_start_end) = batch
+
+    #     pred_traj_rel = generator(
+    #         obs_traj, obs_traj_rel, seq_start_end
+    #     )
+    #     pred_traj = relative_to_abs(
+    #         pred_traj_rel, obs_traj[-1]
+    #     )
+    
+    # return pred_traj[0,:,:].tolist()
+
+if __name__ == '__main__':
+    args = parser.parse_args()
+    main(args)
