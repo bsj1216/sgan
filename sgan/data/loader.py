@@ -1,6 +1,6 @@
-#from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader
 
-from sgan.data.trajectories import TrajectoryDataset#, seq_collate
+from sgan.data.trajectories import TrajectoryDataset, seq_collate
 
 
 def data_loader(args, data):
@@ -11,10 +11,11 @@ def data_loader(args, data):
         skip=args.skip,
         delim=args.delim)
 
-   loader = DataLoader(
+    loader = DataLoader(
        dset,
        batch_size=args.batch_size,
        shuffle=True,
        num_workers=args.loader_num_workers,
        collate_fn=seq_collate)
-    return dset, []
+    
+    return dset, loader
