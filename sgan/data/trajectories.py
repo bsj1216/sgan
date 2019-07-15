@@ -116,7 +116,7 @@ class TrajectoryDataset(Dataset):
             pad_end = frames.index(curr_ped_seq[-1, 0]) + 1
 
             curr_ped_seq = np.transpose(curr_ped_seq[:, 2:])
-#            curr_ped_seq = curr_ped_seq
+            curr_ped_seq = curr_ped_seq
             # Make coordinates relative
             rel_curr_ped_seq = np.zeros(curr_ped_seq.shape)
             rel_curr_ped_seq[:, 1:] = (curr_ped_seq[:, 1:] 
@@ -155,14 +155,14 @@ class TrajectoryDataset(Dataset):
 
     def __getitem__(self, index):
         start, end = self.seq_start_end[index]
-#        out = [
-#            self.obs_traj[start:end, :], self.pred_traj[start:end, :],
-#            self.obs_traj_rel[start:end, :], self.pred_traj_rel[start:end, :],
-#            self.non_linear_ped[start:end], self.loss_mask[start:end, :]
-#        ]
         out = [
-            self.obs_traj[start:end, :], None,
-            self.obs_traj_rel[start:end, :], None,
-            None, None
+           self.obs_traj[start:end, :], self.pred_traj[start:end, :],
+           self.obs_traj_rel[start:end, :], self.pred_traj_rel[start:end, :],
+           self.non_linear_ped[start:end], self.loss_mask[start:end, :]
         ]
+        # out = [
+        #     self.obs_traj[start:end, :], None,
+        #     self.obs_traj_rel[start:end, :], None,
+        #     None, None
+        # ]
         return out
