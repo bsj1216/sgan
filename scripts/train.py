@@ -46,7 +46,7 @@ parser.add_argument('--embedding_dim', default=16, type=int)
 parser.add_argument('--num_layers', default=1, type=int)
 parser.add_argument('--dropout', default=0, type=float)
 parser.add_argument('--batch_norm', default=0, type=bool_flag)
-parser.add_argument('--mlp_dim', default=1024, type=int)
+parser.add_argument('--mlp_dim', default=256, type=int)
 
 # Generator Options
 parser.add_argument('--encoder_h_dim_g', default=16, type=int)
@@ -63,7 +63,7 @@ parser.add_argument('--pooling_type', default='pool_net')
 parser.add_argument('--pool_every_timestep', default=1, type=bool_flag)
 
 # Pool Net Option
-parser.add_argument('--bottleneck_dim', default=512, type=int)
+parser.add_argument('--bottleneck_dim', default=256, type=int)
 
 # Social Pooling Options
 parser.add_argument('--neighborhood_size', default=2.0, type=float)
@@ -92,7 +92,7 @@ parser.add_argument('--num_samples_check', default=5000, type=int)
 # Misc
 parser.add_argument('--use_gpu', default=1, type=int)
 parser.add_argument('--timing', default=0, type=int)
-parser.add_argument('--gpu_num', default="0", type=str)
+parser.add_argument('--gpu_num', default="2", type=str)
 
 
 def init_weights(m):
