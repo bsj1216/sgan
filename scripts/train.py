@@ -36,7 +36,7 @@ parser.add_argument('--dataset_name', default='hriAD', type=str)
 parser.add_argument('--delim', default='tab')
 parser.add_argument('--loader_num_workers', default=4, type=int)
 parser.add_argument('--obs_len', default=8, type=int)
-parser.add_argument('--pred_len', default=1, type=int)
+parser.add_argument('--pred_len', default=2, type=int)
 parser.add_argument('--skip', default=1, type=int)
 
 # Optimization
@@ -45,15 +45,15 @@ parser.add_argument('--num_iterations', default=10000, type=int)
 parser.add_argument('--num_epochs', default=200, type=int)
 
 # Model Options
-parser.add_argument('--embedding_dim', default=32, type=int)
+parser.add_argument('--embedding_dim', default=64, type=int)
 parser.add_argument('--num_layers', default=1, type=int)
 parser.add_argument('--dropout', default=0, type=float)
 parser.add_argument('--batch_norm', default=0, type=bool_flag)
-parser.add_argument('--mlp_dim', default=512, type=int)
+parser.add_argument('--mlp_dim', default=1024, type=int)
 
 # Generator Options
-parser.add_argument('--encoder_h_dim_g', default=32, type=int)
-parser.add_argument('--decoder_h_dim_g', default=64, type=int)
+parser.add_argument('--encoder_h_dim_g', default=64, type=int)
+parser.add_argument('--decoder_h_dim_g', default=128, type=int)
 parser.add_argument('--noise_dim', default=None, type=int_tuple)
 parser.add_argument('--noise_type', default='gaussian')
 parser.add_argument('--noise_mix_type', default='ped')
@@ -66,7 +66,7 @@ parser.add_argument('--pooling_type', default='pool_net')
 parser.add_argument('--pool_every_timestep', default=1, type=bool_flag)
 
 # Pool Net Option
-parser.add_argument('--bottleneck_dim', default=512, type=int)
+parser.add_argument('--bottleneck_dim', default=1024, type=int)
 
 # Social Pooling Options
 parser.add_argument('--neighborhood_size', default=2.0, type=float)
@@ -89,7 +89,7 @@ parser.add_argument('--print_every', default=5, type=int)
 parser.add_argument('--checkpoint_every', default=100, type=int)
 parser.add_argument('--checkpoint_name', default='checkpoint')
 parser.add_argument('--checkpoint_start_from', default=None)
-parser.add_argument('--restore_from_checkpoint', default=0, type=int)
+parser.add_argument('--restore_from_checkpoint', default=1, type=int)
 parser.add_argument('--num_samples_check', default=5000, type=int)
 
 # Misc
