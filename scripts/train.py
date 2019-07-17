@@ -89,7 +89,7 @@ parser.add_argument('--print_every', default=5, type=int)
 parser.add_argument('--checkpoint_every', default=100, type=int)
 parser.add_argument('--checkpoint_name', default='checkpoint')
 parser.add_argument('--checkpoint_start_from', default=None)
-parser.add_argument('--restore_from_checkpoint', default=1, type=int)
+parser.add_argument('--restore_from_checkpoint', default=0, type=int)
 parser.add_argument('--num_samples_check', default=5000, type=int)
 
 # Misc
