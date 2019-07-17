@@ -37,7 +37,7 @@ parser.add_argument('--pred_len', default=1, type=int)
 parser.add_argument('--skip', default=1, type=int)
 
 # Optimization
-parser.add_argument('--batch_size', default=32, type=int)
+parser.add_argument('--batch_size', default=64, type=int)
 parser.add_argument('--num_iterations', default=10000, type=int)
 parser.add_argument('--num_epochs', default=200, type=int)
 
