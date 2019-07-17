@@ -46,7 +46,7 @@ parser.add_argument('--embedding_dim', default=16, type=int)
 parser.add_argument('--num_layers', default=1, type=int)
 parser.add_argument('--dropout', default=0, type=float)
 parser.add_argument('--batch_norm', default=0, type=bool_flag)
-parser.add_argument('--mlp_dim', default=256, type=int)
+parser.add_argument('--mlp_dim', default=512, type=int)
 
 # Generator Options
 parser.add_argument('--encoder_h_dim_g', default=16, type=int)
