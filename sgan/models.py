@@ -170,7 +170,7 @@ class PoolHiddenNet(nn.Module):
     ):
         super(PoolHiddenNet, self).__init__()
 
-        self.mlp_dim = 1024
+        self.mlp_dim = mlp_dim
         self.h_dim = h_dim
         self.bottleneck_dim = bottleneck_dim
         self.embedding_dim = embedding_dim
@@ -377,7 +377,7 @@ class TrajectoryGenerator(nn.Module):
         self.pooling_type = pooling_type
         self.noise_first_dim = 0
         self.pool_every_timestep = pool_every_timestep
-        self.bottleneck_dim = 1024
+        self.bottleneck_dim = bottleneck_dim
 
         self.encoder = Encoder(
             embedding_dim=embedding_dim,

@@ -33,7 +33,7 @@ parser.add_argument('--dataset_name', default='hriAD', type=str)
 parser.add_argument('--delim', default='tab')
 parser.add_argument('--loader_num_workers', default=4, type=int)
 parser.add_argument('--obs_len', default=8, type=int)
-parser.add_argument('--pred_len', default=8, type=int)
+parser.add_argument('--pred_len', default=1, type=int)
 parser.add_argument('--skip', default=1, type=int)
 
 # Optimization
