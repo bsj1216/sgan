@@ -16,7 +16,7 @@ import numpy as np
 from attrdict import AttrDict
 import time
 
-sys.path.insert(0,'/home/sbae/automotive-control-temporary/python/nnmpc/sgan/')
+sys.path.insert(0,'/home/sbae/NNMPC.jl/python/nnmpc/sgan/')
 
 from sgan.data.loader import data_loader
 from sgan.models import TrajectoryGenerator
@@ -81,13 +81,11 @@ class Predictor:
     #       [ 8,  1.000e+00,  1.103e+01,  6.840e+00],
     #       [ 8,  2.000e+00,  8.730e+00,  6.340e+00]])
         data = np.array(data)
-        
-        dset, _ = data_loader(self.args, data)
-        
+        dset, _ = data_loader(self.args, data)            
         pred_traj = self.run_generator(self.args, dset, self.generator)
         return pred_traj
-
-
+    
+        
     def run_generator(self, args, dset, generator):
 #        start_time0 = time.time()
 #        start_time = time.time()
@@ -119,3 +117,28 @@ class Predictor:
         
         return pred_traj[0,:,:].tolist()
     
+    
+    def predict_batch(self, obs_traj, obs_traj_rel, seq_start_end):
+        obs_traj = np.array(obs_traj)
+        obs_traj_rel = np.array(obs_traj_rel)
+        seq_start_end = np.array(seq_start_end)
+
+        obs_traj = torch.from_numpy(obs_traj).type(torch.float).cuda()
+        obs_traj_rel = torch.from_numpy(obs_traj_rel).type(torch.float).cuda()
+        seq_start_end = torch.from_numpy(seq_start_end).cuda()
+        pred_traj = self.run_generator_batch(obs_traj, obs_traj_rel, seq_start_end, self.generator)
+#        print("obs_traj size: {}".format(obs_traj.shape))
+#        print("obs_traj_rel size: {}".format(obs_traj_rel.shape))
+        return pred_traj
+        
+
+    def run_generator_batch(self, obs_traj, obs_traj_rel, seq_start_end, generator):
+        with torch.no_grad():    
+            pred_traj_rel = generator(
+                obs_traj, obs_traj_rel, seq_start_end
+            )
+            pred_traj = relative_to_abs(
+                pred_traj_rel, obs_traj[-1]
+            )
+        
+        return pred_traj[0,:,:].tolist()
