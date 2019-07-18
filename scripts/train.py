@@ -1,3 +1,6 @@
+
+
+
 import argparse
 import gc
 import logging
@@ -5,13 +8,13 @@ import os
 import sys
 import time
 
+sys.path.insert(0,'/home/sbae/sgan')
+
 from collections import defaultdict
 
 import torch
 import torch.nn as nn
 import torch.optim as optim
-
-sys.path.insert(0,'/home/sbae/sgan')
 
 from sgan.data.loader import data_loader
 from sgan.losses import gan_g_loss, gan_d_loss, l2_loss
@@ -29,11 +32,11 @@ logging.basicConfig(level=logging.INFO, format=FORMAT, stream=sys.stdout)
 logger = logging.getLogger(__name__)
 
 # Dataset options
-parser.add_argument('--dataset_name', default='zara1', type=str)
+parser.add_argument('--dataset_name', default='hriAD', type=str)
 parser.add_argument('--delim', default='tab')
 parser.add_argument('--loader_num_workers', default=4, type=int)
 parser.add_argument('--obs_len', default=8, type=int)
-parser.add_argument('--pred_len', default=8, type=int)
+parser.add_argument('--pred_len', default=2, type=int)
 parser.add_argument('--skip', default=1, type=int)
 
 # Optimization
@@ -86,7 +89,7 @@ parser.add_argument('--print_every', default=5, type=int)
 parser.add_argument('--checkpoint_every', default=100, type=int)
 parser.add_argument('--checkpoint_name', default='checkpoint')
 parser.add_argument('--checkpoint_start_from', default=None)
-parser.add_argument('--restore_from_checkpoint', default=1, type=int)
+parser.add_argument('--restore_from_checkpoint', default=0, type=int)
 parser.add_argument('--num_samples_check', default=5000, type=int)
 
 # Misc
@@ -114,13 +117,14 @@ def main(args):
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_num
     train_path = get_dset_path(args.dataset_name, 'train')
     val_path = get_dset_path(args.dataset_name, 'val')
+
     long_dtype, float_dtype = get_dtypes(args)
 
-    print("train_path = {}".format(train_path))
     logger.info("Initializing train dataset")
     train_dset, train_loader = data_loader(args, train_path)
     logger.info("Initializing val dataset")
     _, val_loader = data_loader(args, val_path)
+
     iterations_per_epoch = len(train_dset) / args.batch_size / args.d_steps
     if args.num_epochs:
         args.num_iterations = int(iterations_per_epoch * args.num_epochs)
@@ -128,6 +132,7 @@ def main(args):
     logger.info(
         'There are {} iterations per epoch'.format(iterations_per_epoch)
     )
+
     generator = TrajectoryGenerator(
         obs_len=args.obs_len,
         pred_len=args.pred_len,

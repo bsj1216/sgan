@@ -14,12 +14,18 @@ import argparse
 import os
 import torch
 import sys
+
+from attrdict import AttrDict
+
+sys.path.insert(0,'/home/sbae/sgan')
+
 import numpy as np
 import time
 
 from attrdict import AttrDict
 
 sys.path.insert(0,'/home/sbae/automotive-control-temporary/python/nnmpc/sgan/')
+
 
 from sgan.data.loader import data_loader
 from sgan.models import TrajectoryGenerator
@@ -58,7 +64,8 @@ def get_generator(checkpoint):
 
 
 def main(args):
-    # data example: 
+    # data example:
+
     data = np.array([
        [ 1,  1.000e+00,  8.460e+00,  3.590e+00],
        [ 1,  2.000e+00,  1.364e+01,  5.800e+00],
@@ -80,6 +87,16 @@ def main(args):
     if os.path.isdir(args.model_path):
         raise Exception("model_path cannot be a directory")
     else:
+        path = [args.model_path]
+        
+    
+#    obs_traj = torch.tensor(args.obs_traj)
+    checkpoint = torch.load(path)
+    generator = get_generator(checkpoint)
+    data = args.data
+    _args = AttrDict(checkpoint['args'])
+    _, loader = loader(_args, data)
+    pred_traj = predict(_args, loader, generator)
         paths = [args.model_path]
     
     for path in paths:        
@@ -98,20 +115,35 @@ def main(args):
 
 def predict(args, loader, generator):
     # TODO: check fi
-#    with torch.no_grad():
-    for batch in loader:
-        batch = [tensor.cuda() for tensor in batch]
-        (obs_traj, _, obs_traj_rel, _,
-         _, _, seq_start_end) = batch
+    with torch.no_grad():
+        for batch in loader:
+            batch = [tensor.cuda() for tensor in batch]
+            (obs_traj, _, obs_traj_rel, _,
+             _, _, seq_start_end) = batch
 
-        pred_traj_rel = generator(
-            obs_traj, obs_traj_rel, seq_start_end
-        )
-        pred_traj = relative_to_abs(
-            pred_traj_rel, obs_traj[-1]
-        )
+            pred_traj_rel = generator(
+                obs_traj, obs_traj_rel, seq_start_end
+            )
+            pred_traj = relative_to_abs(
+                pred_traj_rel, obs_traj[-1]
+            )
     
     return pred_traj[0,:,:].tolist()
+
+#    with torch.no_grad():
+    # for batch in loader:
+    #     batch = [tensor.cuda() for tensor in batch]
+    #     (obs_traj, _, obs_traj_rel, _,
+    #      _, _, seq_start_end) = batch
+
+    #     pred_traj_rel = generator(
+    #         obs_traj, obs_traj_rel, seq_start_end
+    #     )
+    #     pred_traj = relative_to_abs(
+    #         pred_traj_rel, obs_traj[-1]
+    #     )
+    
+    # return pred_traj[0,:,:].tolist()
 
 if __name__ == '__main__':
     args = parser.parse_args()
